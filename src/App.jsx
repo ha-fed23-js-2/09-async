@@ -10,7 +10,14 @@ function App() {
 		setTimeout(() => getData(setData, setErrorMessage), 1000)
 	}, [])
 
-	// console.log('Data från API: ', data);
+	const handleTomorrow = async () => {
+		// Nollställ data och errorMessage när vi börjar ett nytt request
+		setData(null)
+		setErrorMessage('')
+
+		// Lägg till en fördröjning så man hinner se vad som händer
+		setTimeout(() => getData(setData, setErrorMessage, '&date=tomorrow&timezone=Europe/Stockholm'), 1000)
+	}
 
 	return (
 		<div className="app">
@@ -22,15 +29,21 @@ function App() {
 			{errorMessage !== '' && <p>{errorMessage}</p>}
 
 			<p>
+				<button onClick={handleTomorrow}> Men imorgon då? </button>
+			</p>
+
+			<p>
 			Powered by <a href="https://sunrisesunset.io/">SunriseSunset.io</a>.
 			</p>
 		</div>
 	)
 }
+// Europe/Stockholm
 
-async function getData(dataCallback, errorCallback) {
+async function getData(dataCallback, errorCallback, settings='') {
 	const defaultLat = 57.6731597, defaultLng = 11.8787299
-	const url = `https://api.sunrisesunset.io/json?lat=${defaultLat}&lng=${defaultLng}`
+	const url = `https://api.sunrisesunset.io/json?lat=${defaultLat}&lng=${defaultLng}` + settings
+
 	try {
 		const response = await fetch(url)
 		const data = await response.json()
